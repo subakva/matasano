@@ -15,9 +15,43 @@ package problems
 //
 // Tune your algorithm until this works.
 
-// import hex "encoding/hex"
+// import "fmt"
+import hex "encoding/hex"
+import "regexp"
+
+var vowels = regexp.MustCompile(`(?i)[aeiou]`)
+var spaces = regexp.MustCompile(`(?i)[ ]`)
+
+// returns true if the string is likely english
+func ProbablyEnglish(decodedString string) (bool) {
+  numVowels     := len(vowels.FindAllStringIndex(decodedString, len(decodedString)))
+  numSpaces     := len(spaces.FindAllStringIndex(decodedString, len(decodedString)))
+  numCharacters := len(decodedString)
+  vowelRatio    := float32(numVowels) / float32(numCharacters)
+  spaceRatio    := float32(numSpaces) / float32(numCharacters)
+
+  return vowelRatio > 0.3 && spaceRatio > 0.1
+}
 
 // DecipherSingleCharacterXOR
-func DecipherSingleCharacterXOR(message string) string {
-  return "Something about Vanilla Ice"
+func DecipherSingleCharacterXOR(message string) (string, string) {
+  // fmt.Printf("Match : %v\n", len(vowels.FindAllStringIndex("aaaaa", 0)))
+  for c := 0; c < 0xFF; c++ {
+    key := string(c)
+    comp := ""
+    for i := 0; i < len(message) / 2; i++ {
+      comp += key
+    }
+    hexComp       := hex.EncodeToString([]byte(comp))
+    xorResult     := FixedXOR(message, hexComp)
+    xorDecoded, _ := hex.DecodeString(xorResult)
+    decodedString := string(xorDecoded)
+
+
+    if ProbablyEnglish(decodedString) {
+      // fmt.Printf("Key: %v Space: %v Decoded: %v\n", key, spaceRatio, decodedString)
+      return decodedString, key
+    }
+  }
+  return "", ""
 }
