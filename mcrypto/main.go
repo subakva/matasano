@@ -27,4 +27,10 @@ func main() {
   decoded, key := problems.DecipherSingleCharacterXOR(message)
   fmt.Printf("Key     : %v\n", key)
   fmt.Printf("Decoded : %v\n", decoded)
+
+  fmt.Print("\nProblem 4\n")
+  filename := "src/subakva/matasano/problems/problem4.txt"
+  fmt.Printf("Searching: %v\n", filename)
+  detected := problems.DetectSingleCharacterXOR(filename)
+  fmt.Printf("Detected : %v\n", detected)
 }

@@ -30,13 +30,17 @@ func ProbablyEnglish(decodedString string) (bool) {
   vowelRatio    := float32(numVowels) / float32(numCharacters)
   spaceRatio    := float32(numSpaces) / float32(numCharacters)
 
-  return vowelRatio > 0.3 && spaceRatio > 0.1
+  // if spaceRatio > 0.1 && vowelRatio > 0.2 {
+  //   fmt.Printf("Space: %v Vowels: %v Decoded: %v\n", spaceRatio, vowelRatio, decodedString)
+  // }
+
+  return vowelRatio > 0.2 && spaceRatio > 0.1
 }
 
 // DecipherSingleCharacterXOR
 func DecipherSingleCharacterXOR(message string) (string, string) {
   // fmt.Printf("Match : %v\n", len(vowels.FindAllStringIndex("aaaaa", 0)))
-  for c := 0; c < 0xFF; c++ {
+  for c := 32; c <= 126; c++ {
     key := string(c)
     comp := ""
     for i := 0; i < len(message) / 2; i++ {
@@ -47,9 +51,7 @@ func DecipherSingleCharacterXOR(message string) (string, string) {
     xorDecoded, _ := hex.DecodeString(xorResult)
     decodedString := string(xorDecoded)
 
-
     if ProbablyEnglish(decodedString) {
-      // fmt.Printf("Key: %v Space: %v Decoded: %v\n", key, spaceRatio, decodedString)
       return decodedString, key
     }
   }
