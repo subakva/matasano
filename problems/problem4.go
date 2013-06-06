@@ -13,7 +13,7 @@ package problems
 import "os"
 import "bufio"
 
-func DetectSingleCharacterXOR(filename string) (string) {
+func DetectRepeatingCharacterXOR(filename string) (string) {
   wd, _ := os.Getwd();
   path := wd + "/" + filename
 
@@ -23,7 +23,7 @@ func DetectSingleCharacterXOR(filename string) (string) {
 
   scanner := bufio.NewScanner(file)
   for scanner.Scan() {
-    decoded, _ := DecipherSingleCharacterXOR(scanner.Text())
+    decoded, _ := RepeatingCharacterXORDecrypt(scanner.Text())
     if decoded != "" {
       return decoded
     }

@@ -24,13 +24,13 @@ func main() {
   fmt.Print("\nProblem 3\n")
   message := "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
   fmt.Printf("Message : %v\n", message)
-  decoded, key := problems.DecipherSingleCharacterXOR(message)
+  decoded, key := problems.RepeatingCharacterXORDecrypt(message)
   fmt.Printf("Key     : %v\n", key)
   fmt.Printf("Decoded : %v\n", decoded)
 
   fmt.Print("\nProblem 4\n")
   filename := "src/subakva/matasano/problems/problem4.txt"
   fmt.Printf("Searching: %v\n", filename)
-  detected := problems.DetectSingleCharacterXOR(filename)
+  detected := problems.DetectRepeatingCharacterXOR(filename)
   fmt.Printf("Detected : %v\n", detected)
 }

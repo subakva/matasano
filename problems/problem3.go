@@ -37,8 +37,7 @@ func ProbablyEnglish(decodedString string) (bool) {
   return vowelRatio > 0.2 && spaceRatio > 0.1
 }
 
-// DecipherSingleCharacterXOR
-func DecipherSingleCharacterXOR(message string) (string, string) {
+func RepeatingCharacterXORDecrypt(message string) (string, string) {
   // fmt.Printf("Match : %v\n", len(vowels.FindAllStringIndex("aaaaa", 0)))
   for c := 32; c <= 126; c++ {
     key := string(c)
