@@ -15,6 +15,7 @@ package problems
 // feel for it.
 
 import hex "encoding/hex"
+import "subakva/matasano/problem2"
 
 func RepeatingKeyXOREncrypt(message string, key string) (string) {
   mask := ""
@@ -24,5 +25,5 @@ func RepeatingKeyXOREncrypt(message string, key string) (string) {
   mask = mask[0:len(message)]
   hexMessage := hex.EncodeToString([]byte(message))
   hexMask    := hex.EncodeToString([]byte(mask))
-  return FixedXOR(hexMessage, hexMask)
+  return problem2.FixedXOR(hexMessage, hexMask)
 }

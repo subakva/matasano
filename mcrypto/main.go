@@ -3,6 +3,7 @@ package main
 import (
   "fmt"
   "subakva/matasano/problem1"
+  "subakva/matasano/problem2"
   "subakva/matasano/problems"
   hex "encoding/hex"
 )
@@ -22,7 +23,7 @@ func runProblem2() {
   hex2 := "686974207468652062756c6c277320657965"
   fmt.Printf("Input1  : %v\n", hex1)
   fmt.Printf("Input2  : %v\n", hex2)
-  fmt.Printf("FixedXOR: %v\n", problems.FixedXOR(hex1, hex2))
+  fmt.Printf("FixedXOR: %v\n", problem2.FixedXOR(hex1, hex2))
 }
 
 func runProblem3() {

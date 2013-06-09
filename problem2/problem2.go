@@ -1,4 +1,4 @@
-package problems
+package problem2
 
 // 2. Fixed XOR
 //

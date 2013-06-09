@@ -17,6 +17,7 @@ package problems
 
 // import "fmt"
 import hex "encoding/hex"
+import "subakva/matasano/problem2"
 import "regexp"
 
 var vowels = regexp.MustCompile(`(?i)[aeiou]`)
@@ -46,7 +47,7 @@ func RepeatingCharacterXORDecrypt(message string) (string, string) {
       comp += key
     }
     hexComp       := hex.EncodeToString([]byte(comp))
-    xorResult     := FixedXOR(message, hexComp)
+    xorResult     := problem2.FixedXOR(message, hexComp)
     xorDecoded, _ := hex.DecodeString(xorResult)
     decodedString := string(xorDecoded)
 
