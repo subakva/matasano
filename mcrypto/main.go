@@ -5,6 +5,7 @@ import (
   "subakva/matasano/problem1"
   "subakva/matasano/problem2"
   "subakva/matasano/problem3"
+  "subakva/matasano/problem4"
   "subakva/matasano/problems"
   hex "encoding/hex"
 )
@@ -40,7 +41,7 @@ func runProblem4() {
   fmt.Print("\nProblem 4\n")
   filename := "src/subakva/matasano/problems/problem4.txt"
   fmt.Printf("Searching: %v\n", filename)
-  detected := problems.DetectRepeatingCharacterXOR(filename)
+  detected := problem4.DetectRepeatingCharacterXOR(filename)
   fmt.Printf("Detected : %v\n", detected)
 }
 

@@ -1,4 +1,4 @@
-package problems
+package problem4
 
 // 4. Detect single-character XOR
 //
