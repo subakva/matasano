@@ -39,7 +39,7 @@ func runProblem3() {
 
 func runProblem4() {
   fmt.Print("\nProblem 4\n")
-  filename := "src/subakva/matasano/problems/problem4.txt"
+  filename := "src/subakva/matasano/problem4/problem4.txt"
   fmt.Printf("Searching: %v\n", filename)
   detected := problem4.DetectRepeatingCharacterXOR(filename)
   fmt.Printf("Detected : %v\n", detected)
