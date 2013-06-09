@@ -1,4 +1,4 @@
-package problems
+package problem1
 
 // 1. Convert hex to base64 and back.
 //
