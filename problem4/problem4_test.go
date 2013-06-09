@@ -13,8 +13,6 @@ func TestDetectRepeatingCharacterXOR(t *testing.T) {
     t.Errorf("DetectRepeatingCharacterXOR(%v)", filename)
     t.Errorf("Expected: %v", expected)
     t.Errorf("Actual  : %v", actual)
-    t.Errorf("Expected: %v", len(expected))
-    t.Errorf("Actual  : %v", len(actual))
   }
 }
 

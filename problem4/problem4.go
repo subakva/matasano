@@ -12,8 +12,8 @@ package problem4
 // ------------------------------------------------------------
 import "os"
 import "bufio"
-import "subakva/matasano/problem3"
 import "strings"
+import "subakva/matasano/problem3"
 
 func DetectRepeatingCharacterXOR(filename string) (string) {
   wd, _ := os.Getwd();
