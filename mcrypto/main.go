@@ -6,7 +6,7 @@ import (
   "subakva/matasano/problem2"
   "subakva/matasano/problem3"
   "subakva/matasano/problem4"
-  "subakva/matasano/problems"
+  "subakva/matasano/problem5"
   hex "encoding/hex"
 )
 
@@ -50,7 +50,7 @@ func runProblem5() {
   expected := "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
   message := "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
   key := "ICE"
-  encrypted := problems.RepeatingKeyXOREncrypt(message, key)
+  encrypted := problem5.RepeatingKeyXOREncrypt(message, key)
   fmt.Printf("Expecting: %v\n", expected)
   fmt.Printf("Encrypted: %v\n", encrypted)
   // encryptAndPrint("CAD", "CAD")
@@ -65,7 +65,7 @@ func runProblem5() {
 }
 
 func encryptAndPrint(message string, key string) {
-  encrypted := problems.RepeatingKeyXOREncrypt(message, key)
+  encrypted := problem5.RepeatingKeyXOREncrypt(message, key)
   fmt.Printf("Message  : %v\n", message)
   fmt.Printf("Key      : %v\n", key)
   fmt.Printf("Encrypted: %v\n", encrypted)
