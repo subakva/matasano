@@ -13,6 +13,7 @@ package problem4
 import "os"
 import "bufio"
 import "subakva/matasano/problem3"
+import "strings"
 
 func DetectRepeatingCharacterXOR(filename string) (string) {
   wd, _ := os.Getwd();
@@ -26,7 +27,7 @@ func DetectRepeatingCharacterXOR(filename string) (string) {
   for scanner.Scan() {
     decoded, _ := problem3.RepeatingCharacterXORDecrypt(scanner.Text())
     if decoded != "" {
-      return decoded
+      return strings.TrimSpace(decoded)
     }
   }
   return ""
