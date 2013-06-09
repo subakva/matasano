@@ -1,4 +1,4 @@
-package problems
+package problem3
 
 // 3. Single-character XOR Cipher
 //

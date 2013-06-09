@@ -4,6 +4,7 @@ import (
   "fmt"
   "subakva/matasano/problem1"
   "subakva/matasano/problem2"
+  "subakva/matasano/problem3"
   "subakva/matasano/problems"
   hex "encoding/hex"
 )
@@ -30,7 +31,7 @@ func runProblem3() {
   fmt.Print("\nProblem 3\n")
   message := "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
   fmt.Printf("Message : %v\n", message)
-  decoded, key := problems.RepeatingCharacterXORDecrypt(message)
+  decoded, key := problem3.RepeatingCharacterXORDecrypt(message)
   fmt.Printf("Key     : %v\n", key)
   fmt.Printf("Decoded : %v\n", decoded)
 }
