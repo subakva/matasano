@@ -15,27 +15,49 @@ package problem3
 //
 // Tune your algorithm until this works.
 
-// import "fmt"
+import "fmt"
 import hex "encoding/hex"
 import "subakva/matasano/problem2"
 import "regexp"
+import "os"
 
-var vowels = regexp.MustCompile(`(?i)[aeiou]`)
-var spaces = regexp.MustCompile(`(?i)[ ]`)
+var spaces     = regexp.MustCompile(`(?i)[ ]`)
+var alphabet   = regexp.MustCompile(`(?i)[a-z]`)
+var vowels     = regexp.MustCompile(`(?i)[aeiou]`)
+var consonants = regexp.MustCompile(`(?i)[bcdfghjklmnpqrstvwxyz]`)
+var common     = regexp.MustCompile(`(?i)[tnshrdlc]`)
+var debug      = os.Getenv("DEBUG") != ""
+
+func MatchFrequency(testString string, expression *regexp.Regexp) float32 {
+  numCharacters := len(testString)
+  numMatches := len(expression.FindAllStringIndex(testString, numCharacters))
+  return float32(numMatches) / float32(numCharacters)
+}
 
 // returns true if the string is likely english
 func ProbablyEnglish(decodedString string) (bool) {
-  numVowels     := len(vowels.FindAllStringIndex(decodedString, len(decodedString)))
-  numSpaces     := len(spaces.FindAllStringIndex(decodedString, len(decodedString)))
-  numCharacters := len(decodedString)
-  vowelRatio    := float32(numVowels) / float32(numCharacters)
-  spaceRatio    := float32(numSpaces) / float32(numCharacters)
+  vowelRatio      := MatchFrequency(decodedString, vowels)
+  spaceRatio      := MatchFrequency(decodedString, spaces)
+  alphabetRatio   := MatchFrequency(decodedString, alphabet)
+  consonantRatio  := MatchFrequency(decodedString, consonants)
+  commonRatio     := MatchFrequency(decodedString, common)
 
+  // if debug && alphabetRatio > 0.75 && vowelRatio > 0.25 && consonantRatio > 0.45 {
+  if debug && alphabetRatio > 0.75 {
+    fmt.Printf("Given: %v\n", decodedString)
+    fmt.Printf("  Alphabet  : %v\n", alphabetRatio)
+    fmt.Printf("  Consonants: %v\n", consonantRatio)
+    fmt.Printf("  Vowels    : %v\n", vowelRatio)
+    fmt.Printf("  Common    : %v\n", commonRatio)
+    fmt.Printf("  Spaces    : %v\n", spaceRatio)
+    fmt.Println("----------------------------------------")
+  }
   // if spaceRatio > 0.1 && vowelRatio > 0.2 {
   //   fmt.Printf("Space: %v Vowels: %v Decoded: %v\n", spaceRatio, vowelRatio, decodedString)
   // }
 
-  return vowelRatio > 0.2 && spaceRatio > 0.1
+  // return vowelRatio > 0.2 && spaceRatio > 0.1
+  return alphabetRatio > 0.75 && vowelRatio > 0.25 && consonantRatio > 0.45
 }
 
 func RepeatingCharacterXORDecrypt(message string) (string, string) {
