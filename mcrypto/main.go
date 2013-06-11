@@ -7,6 +7,7 @@ import (
   "subakva/matasano/problem3"
   "subakva/matasano/problem4"
   "subakva/matasano/problem5"
+  "subakva/matasano/problem6"
   hex "encoding/hex"
 )
 
@@ -71,10 +72,20 @@ func encryptAndPrint(message string, key string) {
   fmt.Printf("Encrypted: %v\n", encrypted)
 }
 
+func runProblem6() {
+  fmt.Print("\nProblem 6\n")
+  filename := "src/subakva/matasano/problem6/problem6.txt"
+  fmt.Printf("Searching: %v\n", filename)
+  message, key := problem6.BreakRepeatingKeyXOR(filename)
+  fmt.Printf("Detected : %v\n", message)
+  fmt.Printf("Key      : %v\n", key)
+}
+
 func main() {
   runProblem1()
   runProblem2()
   runProblem3()
   runProblem4()
   runProblem5()
+  runProblem6()
 }
