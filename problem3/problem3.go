@@ -21,12 +21,13 @@ import "subakva/matasano/problem2"
 import "regexp"
 import "os"
 
-var spaces     = regexp.MustCompile(`(?i)[ ]`)
-var alphabet   = regexp.MustCompile(`(?i)[a-z]`)
-var vowels     = regexp.MustCompile(`(?i)[aeiou]`)
-var consonants = regexp.MustCompile(`(?i)[bcdfghjklmnpqrstvwxyz]`)
-var common     = regexp.MustCompile(`(?i)[tnshrdlc]`)
-var debug      = os.Getenv("DEBUG") != ""
+var spaces              = regexp.MustCompile(`(?i)[ ]`)
+var alphabet            = regexp.MustCompile(`(?i)[a-z]`)
+var vowels              = regexp.MustCompile(`(?i)[aeiou]`)
+var consonants          = regexp.MustCompile(`(?i)[bcdfghjklmnpqrstvwxyz]`)
+var commonLetters       = regexp.MustCompile(`(?i)[tnshrdlc]`)
+var uncommonCharacters  = regexp.MustCompile(`[^a-zA-Z \.\,\'\;\:\-\?\!\n]`)
+var debug               = os.Getenv("DEBUG") != ""
 
 func MatchFrequency(testString string, expression *regexp.Regexp) float32 {
   numCharacters := len(testString)
@@ -36,20 +37,22 @@ func MatchFrequency(testString string, expression *regexp.Regexp) float32 {
 
 // returns true if the string is likely english
 func ProbablyEnglish(decodedString string) (bool) {
-  vowelRatio      := MatchFrequency(decodedString, vowels)
-  spaceRatio      := MatchFrequency(decodedString, spaces)
-  alphabetRatio   := MatchFrequency(decodedString, alphabet)
-  consonantRatio  := MatchFrequency(decodedString, consonants)
-  commonRatio     := MatchFrequency(decodedString, common)
+  vowelRatio        := MatchFrequency(decodedString, vowels)
+  spaceRatio        := MatchFrequency(decodedString, spaces)
+  alphabetRatio     := MatchFrequency(decodedString, alphabet)
+  uncommonRatio     := MatchFrequency(decodedString, uncommonCharacters)
+  consonantRatio    := MatchFrequency(decodedString, consonants)
+  commonLetterRatio := MatchFrequency(decodedString, commonLetters)
 
   // if debug && alphabetRatio > 0.75 && vowelRatio > 0.25 && consonantRatio > 0.45 {
   if debug && alphabetRatio > 0.75 {
     fmt.Printf("Given: %v\n", decodedString)
-    fmt.Printf("  Alphabet  : %v\n", alphabetRatio)
-    fmt.Printf("  Consonants: %v\n", consonantRatio)
-    fmt.Printf("  Vowels    : %v\n", vowelRatio)
-    fmt.Printf("  Common    : %v\n", commonRatio)
-    fmt.Printf("  Spaces    : %v\n", spaceRatio)
+    fmt.Printf("  Alphabet        : %v\n", alphabetRatio)
+    fmt.Printf("  Uncommon        : %v\n", uncommonRatio)
+    fmt.Printf("  Consonants      : %v\n", consonantRatio)
+    fmt.Printf("  Vowels          : %v\n", vowelRatio)
+    fmt.Printf("  Common Letters  : %v\n", commonLetterRatio)
+    fmt.Printf("  Spaces          : %v\n", spaceRatio)
     fmt.Println("----------------------------------------")
   }
   // if spaceRatio > 0.1 && vowelRatio > 0.2 {
@@ -57,23 +60,42 @@ func ProbablyEnglish(decodedString string) (bool) {
   // }
 
   // return vowelRatio > 0.2 && spaceRatio > 0.1
-  return alphabetRatio > 0.75 && vowelRatio > 0.25 && consonantRatio > 0.45
+  // return alphabetRatio > 0.75 && vowelRatio >= 0.25 && consonantRatio > 0.45
+  // return alphabetRatio >= 0.75 && vowelRatio >= 0.25 && consonantRatio >= 0.45 && uncommonRatio < 0.1
+  // return false
+  return uncommonRatio < 0.05 && alphabetRatio > 0.65 && spaceRatio > 0 && vowelRatio > 0.2
 }
 
-func RepeatingCharacterXORDecrypt(message string) (string, string) {
-  // fmt.Printf("Match : %v\n", len(vowels.FindAllStringIndex("aaaaa", 0)))
+func DumpDebug(key string, hexMessage string, decodedString string) {
+  fmt.Printf("Key: %v\n", key)
+  fmt.Printf("  Encrypted: %v\n", hexMessage)
+  fmt.Printf("  Decrypted: %v\n", decodedString)
+  fmt.Printf("  English? : %v\n", ProbablyEnglish(decodedString))
+  fmt.Printf("  vowelRatio        :%v\n", MatchFrequency(decodedString, vowels))
+  fmt.Printf("  spaceRatio        :%v\n", MatchFrequency(decodedString, spaces))
+  fmt.Printf("  alphabetRatio     :%v\n", MatchFrequency(decodedString, alphabet))
+  fmt.Printf("  uncommonRatio     :%v\n", MatchFrequency(decodedString, uncommonCharacters))
+  fmt.Printf("  consonantRatio    :%v\n", MatchFrequency(decodedString, consonants))
+  fmt.Printf("  commonLetterRatio :%v\n", MatchFrequency(decodedString, commonLetters))
+}
+
+func RepeatingCharacterXORDecrypt(hexMessage string) (string, string) {
   for c := 32; c <= 126; c++ {
     key := string(c)
     comp := ""
-    for i := 0; i < len(message) / 2; i++ {
+    for i := 0; i < len(hexMessage) / 2; i++ {
       comp += key
     }
     hexComp       := hex.EncodeToString([]byte(comp))
-    xorResult     := problem2.FixedXOR(message, hexComp)
+    xorResult     := problem2.FixedXOR(hexMessage, hexComp)
     xorDecoded, _ := hex.DecodeString(xorResult)
     decodedString := string(xorDecoded)
 
     if ProbablyEnglish(decodedString) {
+      if debug {
+        fmt.Printf("Selected: %v\n", key)
+        DumpDebug(key, hexMessage, decodedString)
+      }
       return decodedString, key
     }
   }

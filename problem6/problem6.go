@@ -50,12 +50,26 @@ package problem6
 //
 
 import b64 "encoding/base64"
+import hex "encoding/hex"
 import "io/ioutil"
 import "os"
 import "fmt"
 import "math"
-import hex "encoding/hex"
+import "strings"
 import "subakva/matasano/problem3"
+
+func DecodeBase64(encoded []byte) []byte {
+  decoded, err := b64.StdEncoding.DecodeString(string(encoded))
+  if err != nil { panic(err) }
+  return decoded
+}
+
+func DecodeHex(encoded []byte) []byte {
+  trimmed := strings.TrimSpace(string(encoded))
+  decoded, err := hex.DecodeString(trimmed)
+  if err != nil { panic(err) }
+  return decoded
+}
 
 func BitCount(n uint8) (num int) {
   for i := uint8(0); i < 8; i++ {
@@ -87,31 +101,30 @@ func Float64Average(values []float64) float64 {
   return sum / float64(len(values))
 }
 
-func HammingDistance(first string, second string) (distance int) {
+func HammingDistance(first []byte, second []byte) (distance int) {
   if len(first) != len(second) {
     panic("Cannot calculate Hamming distance unless the lengths match.")
   }
   for i := 0; i < len(first); i++ {
-    b1 := []byte(first)[i]
-    b2 := []byte(second)[i]
+    b1 := first[i]
+    b2 := second[i]
     distance += BitCount(b1 ^ b2) // count the number of bits in the XOR result
   }
   return
 }
 
-func GuessKeySize(decoded []byte, numChunks int) (likelyKeySize int) {
+func GuessKeySize(bytes []byte, numChunks int) (likelyKeySize int) {
   minDistance      := float64(math.MaxFloat64)
   numCombinations  := CountCombinations(numChunks, 2)
 
-  for keySize := 2; keySize <= 40; keySize++ {
-    chunks := ChunkString(string(decoded), keySize)
-    // chunks := make([]string, 4)
-    // for i := 0; i < numChunks; i++ {
-    //   startIndex := keySize * i
-    //   endIndex   := keySize * (i + 1)
-    //   chunks[i] = string(decoded[startIndex:endIndex])
-    // }
+  maxKeySize := 40
+  maxKeySizeForNumChunks := len(bytes) / numChunks
+  if maxKeySizeForNumChunks < maxKeySize {
+    maxKeySize = maxKeySizeForNumChunks
+  }
 
+  for keySize := 2; keySize <= maxKeySize; keySize++ {
+    chunks := ChunkBytes(bytes, keySize)
     distances := make([]float64, numCombinations)
     di := 0
     for i := 0; i < numChunks; i++ {
@@ -123,6 +136,8 @@ func GuessKeySize(decoded []byte, numChunks int) (likelyKeySize int) {
       }
     }
     averageDistance := Float64Average(distances)
+    // fmt.Printf("keySize, averageDistance  = %v, %v\n", keySize, averageDistance)
+    // fmt.Printf("keySize, distances        = %v, %v\n", keySize, distances)
     if averageDistance < minDistance {
       minDistance   = averageDistance
       likelyKeySize = keySize
@@ -131,53 +146,97 @@ func GuessKeySize(decoded []byte, numChunks int) (likelyKeySize int) {
   return
 }
 
-func ChunkString(chunkMe string, chunkSize int) []string {
-  numChunks := len(string(chunkMe)) / chunkSize
-  chunks    := make([]string, numChunks)
+func RatioCeil(total int, part int) int {
+  return int(math.Ceil(float64(total) / float64(part)))
+}
+
+func IntMin(first int, second int) int {
+  if first <= second {
+    return first
+  } else {
+    return second
+  }
+}
+
+func ChunkBytes(chunkMe []byte, chunkSize int) [][]byte {
+  numChunks := len(chunkMe) / chunkSize
+  if len(chunkMe) % chunkSize != 0 { numChunks += 1 }
+  chunks := make([][]byte, numChunks)
   for i := 0; i < numChunks; i++ {
-    startIndex := chunkSize * i
-    endIndex   := chunkSize * (i + 1)
-    chunks[i] = string(chunkMe[startIndex:endIndex])
+    startIndex  := chunkSize * i
+    endIndex    := chunkSize * (i + 1)
+    if endIndex > len(chunkMe) { endIndex = len(chunkMe) }
+    chunks[i] = chunkMe[startIndex:endIndex]
   }
   return chunks
+}
+
+func TransposeChunks(chunks [][]byte) (transposed [][]byte) {
+  numChunks         := len(chunks)
+  maxBytesPerChunk  := len(chunks[0])
+  minBytesPerChunk  := len(chunks[len(chunks) - 1])
+
+  transposed = make([][]byte, maxBytesPerChunk)
+  for byteIndex := 0; byteIndex < maxBytesPerChunk; byteIndex++ {
+    blockLength := numChunks
+    if byteIndex >= minBytesPerChunk {
+      blockLength = numChunks - 1
+    }
+    block := make([]byte, blockLength)
+    for j := 0; j < numChunks; j++ {
+      if byteIndex < len(chunks[j]) {
+        block[j] = chunks[j][byteIndex]
+      }
+    }
+    transposed[byteIndex] = block
+  }
+  // for i := 0; i < len(transposed); i++ {
+  //   fmt.Printf("len(transposed[%v]) : %v\n", i, len(transposed[i]))
+  //   fmt.Printf("transposed[%v] : %v\n", i, transposed[i])
+  // }
+  return
+}
+
+func ComposeParts(parts []string) (message string) {
+  numParts := len(parts)
+  // for i := 0; i < numParts; i++ {
+  //   fmt.Printf("parts[%v] : %v\n", i, parts[i])
+  // }
+  for i := 0; i < len(parts[0]); i++ {
+    for j := 0; j < numParts; j++ {
+      if i < len(parts[j]) {
+        message += string(parts[j][i])
+      }
+    }
+  }
+  return
 }
 
 func BreakRepeatingKeyXOR(filename string) (message string, key string) {
   wd, _ := os.Getwd();
   path := wd + "/" + filename
   encoded, _ := ioutil.ReadFile(path)
-  decoded, _ := b64.StdEncoding.DecodeString(string(encoded))
+  decoded := DecodeBase64(encoded)
 
   likelyKeySize := GuessKeySize(decoded, 4)
   fmt.Printf("likelyKeySize : %v\n", likelyKeySize)
-  fmt.Printf("len(string(decoded)) : %v\n", len(string(decoded)))
+  // fmt.Println("likelyKeySize ignored: using 3 instead...")
+  // likelyKeySize = 3
 
+  // fmt.Printf("len(decoded) : %v\n", len(decoded))
+  // fmt.Printf("decoded : %v\n", decoded)
+  chunks     := ChunkBytes(decoded, likelyKeySize)
+  transposed := TransposeChunks(chunks)
 
-  // decoded       = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-  // decoded       = []byte("THEQUICKBROWNFOXJUMPEDOVERTHELAZYDOG")
-  // likelyKeySize = 2
-  chunks            := ChunkString(string(decoded), likelyKeySize)
-  transposedBlocks  := make([][]byte, likelyKeySize)
+  messageParts := make([]string, likelyKeySize)
   for i := 0; i < likelyKeySize; i++ {
-    maxLength := len(decoded) / likelyKeySize
-    block := make([]byte, maxLength)
-    for j := 0; j < maxLength; j++ {
-      block[j] = chunks[j][i]
-    }
-    transposedBlocks[i] = block
-    // fmt.Printf("transposedBlocks[%v] : %v\n", i, string(block))
-  }
-
-  for i := 0; i < likelyKeySize; i++ {
-    // fmt.Printf("transposedBlocks[%v] : %v\n", i, string(transposedBlocks[i]))
-    hexEncoded := hex.EncodeToString(transposedBlocks[i])
-    // fmt.Printf("hexEncoded : %v\n", hexEncoded)
-    // decoded, _ := hex.DecodeString(hexEncoded)
-    // fmt.Printf("hexDecoded : %v\n", string(decoded))
+    hexEncoded := hex.EncodeToString(transposed[i])
     decrypted, keyChar := problem3.RepeatingCharacterXORDecrypt(hexEncoded)
-    message += decrypted
-    key     += keyChar
+    messageParts[i] = decrypted
+    key += keyChar
   }
+
+  message = ComposeParts(messageParts)
 
   return message, key
 }
