@@ -2,8 +2,8 @@ package problem6
 
 import (
   "testing"
-  "bytes"
   "subakva/matasano/assertions"
+  utils "subakva/matasano/utils"
 )
 
 func TestBitCount(t *testing.T) {
@@ -52,56 +52,22 @@ func TestHammingDistance(t *testing.T) {
 
 func TestBreakRepeatingKeyXOR(t *testing.T) {
   filename := "problem6.txt"
-  // filename := "problem5.b64.txt"
-  expectedMessage := "UNKNOWN"
-  expectedKey     := "UNKNOWN"
-  assertions.CallAndAssertEquals(t, BreakRepeatingKeyXOR, []interface{}{filename}, []interface{}{expectedMessage, expectedKey})
-}
-
-func StringsToBytes(strings []string) [][]byte {
-  bytes := make([][]byte, len(strings))
-  for i := 0; i < len(strings); i++ {
-    bytes[i] = []byte(strings[i])
-  }
-  return bytes
-}
-
-func BytesToStrings(bytes [][]byte) []string {
-  strings := make([]string, len(bytes))
-  for i := 0; i < len(bytes); i++ {
-    strings[i] = string(bytes[i])
-  }
-  return strings
+  expectedMessage := "I'm back and I'm ringin' the bell"
+  expectedKey     := "Terminator X: Bring the noise"
+  actualMessage, actualKey := BreakRepeatingKeyXOR(filename)
+  assertions.AssertEquals(t, actualKey, expectedKey, "Key did not match!")
+  assertions.AssertEquals(t, actualMessage[0:33], expectedMessage, "Messages did not match!")
 }
 
 func AssertTransposeChunks(t *testing.T, chunks []string, expected []string) {
-  byteChunks := StringsToBytes(chunks)
+  byteChunks := utils.StringsToBytes(chunks)
   actual := TransposeChunks(byteChunks)
-  AssertStringArraysEqual(t, actual, expected)
+  assertions.AssertStringArraysEqual(t, actual, expected)
 }
 
 func AssertChunkBytes(t *testing.T, chunkMe string, chunkSize int, expected []string) {
   actual := ChunkBytes([]byte(chunkMe), chunkSize)
-  AssertStringArraysEqual(t, actual, expected)
-}
-
-func AssertStringArraysEqual(t *testing.T, actual [][]byte, expected []string) {
-  actualStrings := BytesToStrings(actual)
-  if len(actual) != len(expected) {
-    t.Errorf("Actual length does not match expected: %v != %v", len(actual), len(expected))
-    t.Errorf("Actual  : %v\n", actualStrings)
-    t.Errorf("Expected: %v\n", expected)
-  } else {
-    for i := 0; i < len(actual); i++ {
-      if ! bytes.Equal(actual[i], []byte(expected[i])) {
-        t.Errorf("Actual does not match expected at index: %v", i)
-        t.Errorf("Actual  : %v\n", actualStrings)
-        t.Errorf("Expected: %v\n", expected)
-        t.Errorf("Actual[%v]  : %v\n", i, actualStrings[i])
-        t.Errorf("Expected[%v]: %v\n", i, expected[i])
-      }
-    }
-  }
+  assertions.AssertStringArraysEqual(t, actual, expected)
 }
 
 func AssertCountCombinations(t *testing.T, first int, second int, expected int) {

@@ -5,6 +5,8 @@ import (
   "runtime"
   "reflect"
   "fmt"
+  "bytes"
+  utils "subakva/matasano/utils"
 )
 
 func AssertEquals(t *testing.T, actual interface{}, expected interface{}, message string) {
@@ -12,6 +14,25 @@ func AssertEquals(t *testing.T, actual interface{}, expected interface{}, messag
     t.Errorf("Assertion failed: %v", message)
     t.Errorf("\tExpected: %v", expected)
     t.Errorf("\tActual  : %v", actual)
+  }
+}
+
+func AssertStringArraysEqual(t *testing.T, actual [][]byte, expected []string) {
+  actualStrings := utils.BytesToStrings(actual)
+  if len(actual) != len(expected) {
+    t.Errorf("Actual length does not match expected: %v != %v", len(actual), len(expected))
+    t.Errorf("Actual  : %v\n", actualStrings)
+    t.Errorf("Expected: %v\n", expected)
+  } else {
+    for i := 0; i < len(actual); i++ {
+      if ! bytes.Equal(actual[i], []byte(expected[i])) {
+        t.Errorf("Actual does not match expected at index: %v", i)
+        t.Errorf("Actual  : %v\n", actualStrings)
+        t.Errorf("Expected: %v\n", expected)
+        t.Errorf("Actual[%v]  : %v\n", i, actualStrings[i])
+        t.Errorf("Expected[%v]: %v\n", i, expected[i])
+      }
+    }
   }
 }
 

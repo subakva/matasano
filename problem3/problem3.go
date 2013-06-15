@@ -29,6 +29,14 @@ var commonLetters       = regexp.MustCompile(`(?i)[tnshrdlc]`)
 var uncommonCharacters  = regexp.MustCompile(`[^a-zA-Z \.\,\'\;\:\-\?\!\n]`)
 var debug               = os.Getenv("DEBUG") != ""
 
+func EnableDebug() {
+  debug = true
+}
+
+func DisableDebug() {
+  debug = false
+}
+
 func MatchFrequency(testString string, expression *regexp.Regexp) float32 {
   numCharacters := len(testString)
   numMatches := len(expression.FindAllStringIndex(testString, numCharacters))
@@ -45,7 +53,8 @@ func ProbablyEnglish(decodedString string) (bool) {
   commonLetterRatio := MatchFrequency(decodedString, commonLetters)
 
   // if debug && alphabetRatio > 0.75 && vowelRatio > 0.25 && consonantRatio > 0.45 {
-  if debug && alphabetRatio > 0.75 {
+  // if debug && alphabetRatio > 0.75 {
+  if debug && uncommonRatio < 0.05 {
     fmt.Printf("Given: %v\n", decodedString)
     fmt.Printf("  Alphabet        : %v\n", alphabetRatio)
     fmt.Printf("  Uncommon        : %v\n", uncommonRatio)
@@ -62,8 +71,8 @@ func ProbablyEnglish(decodedString string) (bool) {
   // return vowelRatio > 0.2 && spaceRatio > 0.1
   // return alphabetRatio > 0.75 && vowelRatio >= 0.25 && consonantRatio > 0.45
   // return alphabetRatio >= 0.75 && vowelRatio >= 0.25 && consonantRatio >= 0.45 && uncommonRatio < 0.1
-  // return false
-  return uncommonRatio < 0.05 && alphabetRatio > 0.65 && spaceRatio > 0 && vowelRatio > 0.2
+  return uncommonRatio < 0.05 && alphabetRatio > 0.6 && spaceRatio > 0 && vowelRatio > 0.17
+  // return uncommonRatio < 0.05 && alphabetRatio > 0.65 //&& spaceRatio > 0 && vowelRatio > 0.2
 }
 
 func DumpDebug(key string, hexMessage string, decodedString string) {

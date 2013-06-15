@@ -49,27 +49,13 @@ package problem6
 // block. Put them together and you have the key.
 //
 
-import b64 "encoding/base64"
 import hex "encoding/hex"
 import "io/ioutil"
 import "os"
 import "fmt"
 import "math"
-import "strings"
 import "subakva/matasano/problem3"
-
-func DecodeBase64(encoded []byte) []byte {
-  decoded, err := b64.StdEncoding.DecodeString(string(encoded))
-  if err != nil { panic(err) }
-  return decoded
-}
-
-func DecodeHex(encoded []byte) []byte {
-  trimmed := strings.TrimSpace(string(encoded))
-  decoded, err := hex.DecodeString(trimmed)
-  if err != nil { panic(err) }
-  return decoded
-}
+import utils "subakva/matasano/utils"
 
 func BitCount(n uint8) (num int) {
   for i := uint8(0); i < 8; i++ {
@@ -146,18 +132,6 @@ func GuessKeySize(bytes []byte, numChunks int) (likelyKeySize int) {
   return
 }
 
-func RatioCeil(total int, part int) int {
-  return int(math.Ceil(float64(total) / float64(part)))
-}
-
-func IntMin(first int, second int) int {
-  if first <= second {
-    return first
-  } else {
-    return second
-  }
-}
-
 func ChunkBytes(chunkMe []byte, chunkSize int) [][]byte {
   numChunks := len(chunkMe) / chunkSize
   if len(chunkMe) % chunkSize != 0 { numChunks += 1 }
@@ -216,22 +190,21 @@ func BreakRepeatingKeyXOR(filename string) (message string, key string) {
   wd, _ := os.Getwd();
   path := wd + "/" + filename
   encoded, _ := ioutil.ReadFile(path)
-  decoded := DecodeBase64(encoded)
+  decoded := utils.DecodeBase64(encoded)
 
   likelyKeySize := GuessKeySize(decoded, 4)
-  fmt.Printf("likelyKeySize : %v\n", likelyKeySize)
-  // fmt.Println("likelyKeySize ignored: using 3 instead...")
-  // likelyKeySize = 3
-
-  // fmt.Printf("len(decoded) : %v\n", len(decoded))
-  // fmt.Printf("decoded : %v\n", decoded)
+  fmt.Printf(" => Likely Key Size: %v\n", likelyKeySize)
   chunks     := ChunkBytes(decoded, likelyKeySize)
   transposed := TransposeChunks(chunks)
 
   messageParts := make([]string, likelyKeySize)
   for i := 0; i < likelyKeySize; i++ {
     hexEncoded := hex.EncodeToString(transposed[i])
+
     decrypted, keyChar := problem3.RepeatingCharacterXORDecrypt(hexEncoded)
+    if keyChar == "" {
+      fmt.Printf(" => Unable to find key at index: %v\n", i)
+    }
     messageParts[i] = decrypted
     key += keyChar
   }

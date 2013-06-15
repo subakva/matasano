@@ -10,8 +10,8 @@ func TestProbablyEnglish(t *testing.T) {
   if ProbablyEnglish("01234567890") {
     t.Errorf("Numbers should not be english")
   }
-  if !ProbablyEnglish("englishletterswithoutspaces") {
-    t.Errorf("English letters without spaces should be English")
+  if !ProbablyEnglish("englishletterswithone space") {
+    t.Errorf("English letters with one space should be English")
   }
   if !ProbablyEnglish("English should be English") {
     t.Errorf("English should be English")
