@@ -1,11 +1,17 @@
+/*
+ * Kitchen sink module with generic functions that are shared across problems.
+ */
+
 package utils
 
-import b64 "encoding/base64"
-import hex "encoding/hex"
-import "strings"
-import "os"
-import "bufio"
-import "io/ioutil"
+import (
+  "encoding/base64"
+  "encoding/hex"
+  "strings"
+  "os"
+  "bufio"
+  "io/ioutil"
+)
 
 // Reads a file relative to the current working directory.
 func ReadRelative(filename string) []byte {
@@ -46,7 +52,7 @@ func IntInArray(haystack []int, needle int) bool {
 
 // Decodes a b64-encoded byte array
 func DecodeBase64(encoded []byte) []byte {
-  decoded, err := b64.StdEncoding.DecodeString(string(encoded))
+  decoded, err := base64.StdEncoding.DecodeString(string(encoded))
   if err != nil { panic(err) }
   return decoded
 }
@@ -90,22 +96,3 @@ func ChunkBytes(chunkMe []byte, chunkSize int) [][]byte {
   }
   return chunks
 }
-
-// func FirstLine(s string) string {
-//   parts := strings.SplitN(s, "\n", 1)
-//   fmt.Println(parts)
-//   return parts[0]
-// }
-
-// func RatioCeil(total int, part int) int {
-//   return int(math.Ceil(float64(total) / float64(part)))
-// }
-
-// func IntMin(first int, second int) int {
-//   if first <= second {
-//     return first
-//   } else {
-//     return second
-//   }
-// }
-

@@ -1,3 +1,7 @@
+/*
+ * Helper functions for testing. Includes a little gratuitous reflection.
+ */
+
 package assertions
 
 import (
@@ -6,7 +10,7 @@ import (
   "reflect"
   "fmt"
   "bytes"
-  utils "subakva/matasano/utils"
+  "subakva/matasano/utils"
 )
 
 func AssertEquals(t *testing.T, actual interface{}, expected interface{}, message string) {

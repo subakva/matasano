@@ -49,12 +49,15 @@ package problem6
 // block. Put them together and you have the key.
 //
 
-import hex "encoding/hex"
-import "fmt"
-import "math"
-import "subakva/matasano/problem3"
-import "subakva/matasano/utils"
+import (
+  "encoding/hex"
+  "fmt"
+  "math"
+  "subakva/matasano/problem3"
+  "subakva/matasano/utils"
+)
 
+// Counts the number of bits in an unsigned 8-bit int
 func BitCount(n uint8) (num int) {
   for i := uint8(0); i < 8; i++ {
     leftShift   := (1 << i)               // shift left to compare the bit in position i
@@ -65,6 +68,7 @@ func BitCount(n uint8) (num int) {
   return
 }
 
+// Computes the factorial of an int
 func Factorial(n int) int {
   if n <= 1 {
     return 1
@@ -73,10 +77,12 @@ func Factorial(n int) int {
   }
 }
 
+// Calculates the number of k-combinations for n-items
 func CountCombinations(n int, k int) int {
   return Factorial(n) / (Factorial(k) * Factorial(n - k))
 }
 
+// Calculates the average of an array of 64-bit floats
 func Float64Average(values []float64) float64 {
   sum := float64(0)
   for _, v := range values {
@@ -85,6 +91,7 @@ func Float64Average(values []float64) float64 {
   return sum / float64(len(values))
 }
 
+// Calculates the Hamming distance between two byte arrays
 func HammingDistance(first []byte, second []byte) (distance int) {
   if len(first) != len(second) {
     panic("Cannot calculate Hamming distance unless the lengths match.")
@@ -97,6 +104,7 @@ func HammingDistance(first []byte, second []byte) (distance int) {
   return
 }
 
+// Guesses the size of the key for an encrypted byte array
 func GuessKeySize(bytes []byte, numChunks int) (likelyKeySize int) {
   minDistance      := float64(math.MaxFloat64)
   numCombinations  := CountCombinations(numChunks, 2)
@@ -130,6 +138,7 @@ func GuessKeySize(bytes []byte, numChunks int) (likelyKeySize int) {
   return
 }
 
+// Transposes the content of an array of byte arrays
 func TransposeChunks(chunks [][]byte) (transposed [][]byte) {
   numChunks         := len(chunks)
   maxBytesPerChunk  := len(chunks[0])
@@ -156,6 +165,7 @@ func TransposeChunks(chunks [][]byte) (transposed [][]byte) {
   return
 }
 
+// Composes an array of strings into a single string, character-by-character
 func ComposeParts(parts []string) (message string) {
   numParts := len(parts)
   // for i := 0; i < numParts; i++ {
@@ -171,6 +181,7 @@ func ComposeParts(parts []string) (message string) {
   return
 }
 
+// Attempts to decrypt the contents of a base64-encoded file containing an XOR-encrypted message.
 func BreakRepeatingKeyXOR(filename string) (message string, key string) {
   encoded := utils.ReadRelative(filename)
   decoded := utils.DecodeBase64(encoded)

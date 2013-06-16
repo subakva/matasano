@@ -15,11 +15,13 @@ package problem3
 //
 // Tune your algorithm until this works.
 
-import "fmt"
-import hex "encoding/hex"
-import "subakva/matasano/problem2"
-import "regexp"
-import "os"
+import (
+  "fmt"
+  "regexp"
+  "os"
+  "encoding/hex"
+  "subakva/matasano/problem2"
+)
 
 var spaces              = regexp.MustCompile(`(?i)[ ]`)
 var alphabet            = regexp.MustCompile(`(?i)[a-z]`)

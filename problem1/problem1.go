@@ -10,11 +10,19 @@ package problem1
 //
 //   SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t
 
-import b64 "encoding/base64"
-import hex "encoding/hex"
+import (
+  "encoding/base64"
+  "encoding/hex"
+)
 
-// HexToBase64 converts a hex string into base64
+// Converts a hex string into base64 string
 func HexToBase64(hexString string) string {
   decodedString, _ := hex.DecodeString(hexString)
-  return b64.StdEncoding.EncodeToString([]byte(decodedString))
+  return base64.StdEncoding.EncodeToString([]byte(decodedString))
+}
+
+// Converts a base64 string into a hex string
+func Base64ToHex(b64String string) string {
+  decodedString, _ := base64.StdEncoding.DecodeString(b64String)
+  return hex.EncodeToString([]byte(decodedString))
 }

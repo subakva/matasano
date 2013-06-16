@@ -17,10 +17,12 @@ package problem2
 //
 //  746865206b696420646f6e277420706c6179
 
-import hex "encoding/hex"
+import "encoding/hex"
 
 // FixedXOR calculates the XOR of two hex-encoded strings
 func FixedXOR(hex1 string, hex2 string) string {
+  if len(hex1) != len(hex2) { panic("FixedXOR: String lengths must match!") }
+
   bytes1, _ := hex.DecodeString(hex1)
   bytes2, _ := hex.DecodeString(hex2)
 

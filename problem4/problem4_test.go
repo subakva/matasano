@@ -1,8 +1,6 @@
 package problem4
 
-import (
-  "testing"
-)
+import "testing"
 
 func TestDetectRepeatingCharacterXOR(t *testing.T) {
   filename := "problem4.txt"

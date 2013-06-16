@@ -14,9 +14,12 @@ package problem5
 // Encrypt a bunch of stuff using your repeating-key XOR function. Get a
 // feel for it.
 
-import hex "encoding/hex"
-import "subakva/matasano/problem2"
+import (
+  "encoding/hex"
+  "subakva/matasano/problem2"
+)
 
+// Encrypts the message with the key
 func RepeatingKeyXOREncrypt(message string, key string) (string) {
   mask := ""
   for len(mask) < len(message) {

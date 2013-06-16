@@ -1,7 +1,9 @@
 package problem5
 
 import (
+  "fmt"
   "testing"
+  "subakva/matasano/assertions"
 )
 
 func TestRepeatingKeyXOREncrypt(t *testing.T) {
@@ -9,11 +11,6 @@ func TestRepeatingKeyXOREncrypt(t *testing.T) {
   key := "ICE"
   expected := "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
   actual   := RepeatingKeyXOREncrypt(message, key)
-
-  if actual != expected {
-    t.Errorf("RepeatingKeyXOREncrypt(%v, %v)", message, key)
-    t.Errorf("Expected: %v", expected)
-    t.Errorf("Actual  : %v", actual)
-  }
+  assertions.AssertEquals(t, actual, expected, fmt.Sprintf("RepeatingKeyXOREncrypt(%v, %v)", message, key))
 }
 
