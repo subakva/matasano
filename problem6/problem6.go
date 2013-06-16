@@ -50,12 +50,10 @@ package problem6
 //
 
 import hex "encoding/hex"
-import "io/ioutil"
-import "os"
 import "fmt"
 import "math"
 import "subakva/matasano/problem3"
-import utils "subakva/matasano/utils"
+import "subakva/matasano/utils"
 
 func BitCount(n uint8) (num int) {
   for i := uint8(0); i < 8; i++ {
@@ -110,7 +108,7 @@ func GuessKeySize(bytes []byte, numChunks int) (likelyKeySize int) {
   }
 
   for keySize := 2; keySize <= maxKeySize; keySize++ {
-    chunks := ChunkBytes(bytes, keySize)
+    chunks := utils.ChunkBytes(bytes, keySize)
     distances := make([]float64, numCombinations)
     di := 0
     for i := 0; i < numChunks; i++ {
@@ -130,19 +128,6 @@ func GuessKeySize(bytes []byte, numChunks int) (likelyKeySize int) {
     }
   }
   return
-}
-
-func ChunkBytes(chunkMe []byte, chunkSize int) [][]byte {
-  numChunks := len(chunkMe) / chunkSize
-  if len(chunkMe) % chunkSize != 0 { numChunks += 1 }
-  chunks := make([][]byte, numChunks)
-  for i := 0; i < numChunks; i++ {
-    startIndex  := chunkSize * i
-    endIndex    := chunkSize * (i + 1)
-    if endIndex > len(chunkMe) { endIndex = len(chunkMe) }
-    chunks[i] = chunkMe[startIndex:endIndex]
-  }
-  return chunks
 }
 
 func TransposeChunks(chunks [][]byte) (transposed [][]byte) {
@@ -187,14 +172,12 @@ func ComposeParts(parts []string) (message string) {
 }
 
 func BreakRepeatingKeyXOR(filename string) (message string, key string) {
-  wd, _ := os.Getwd();
-  path := wd + "/" + filename
-  encoded, _ := ioutil.ReadFile(path)
+  encoded := utils.ReadRelative(filename)
   decoded := utils.DecodeBase64(encoded)
 
   likelyKeySize := GuessKeySize(decoded, 4)
   fmt.Printf(" => Likely Key Size: %v\n", likelyKeySize)
-  chunks     := ChunkBytes(decoded, likelyKeySize)
+  chunks     := utils.ChunkBytes(decoded, likelyKeySize)
   transposed := TransposeChunks(chunks)
 
   messageParts := make([]string, likelyKeySize)

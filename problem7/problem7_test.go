@@ -3,7 +3,6 @@ package problem7
 import (
   "testing"
   "subakva/matasano/assertions"
-  // utils "subakva/matasano/utils"
 )
 
 func TestDecryptAESECB(t *testing.T) {

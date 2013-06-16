@@ -3,7 +3,38 @@ package utils
 import b64 "encoding/base64"
 import hex "encoding/hex"
 import "strings"
-// import "fmt"
+import "os"
+import "bufio"
+import "io/ioutil"
+
+// Reads a file relative to the current working directory.
+func ReadRelative(filename string) []byte {
+  wd, _         := os.Getwd();
+  path          := wd + "/" + filename
+  data, err     := ioutil.ReadFile(path)
+  if err != nil { panic(err) }
+  return data
+}
+
+// Reads a file line-by-line and passes it to the calback function. If the return
+// value is not an empty string, stop scanning and return the value.
+func ReadAndScan(filename string, cb func(*bufio.Scanner) string) string {
+  wd, _ := os.Getwd();
+  path := wd + "/" + filename
+
+  file, err := os.Open(path)
+  if err != nil { panic(err) }
+  defer file.Close()
+
+  scanner := bufio.NewScanner(file)
+  for scanner.Scan() {
+    result := cb(scanner)
+    if result != "" {
+      return result
+    }
+  }
+  return ""
+}
 
 // Returns true if the int is in the array of ints
 func IntInArray(haystack []int, needle int) bool {
@@ -44,6 +75,20 @@ func BytesToStrings(bytes [][]byte) []string {
     strings[i] = string(bytes[i])
   }
   return strings
+}
+
+// Splits the byte array into an array of byte arrays of the specified size.
+func ChunkBytes(chunkMe []byte, chunkSize int) [][]byte {
+  numChunks := len(chunkMe) / chunkSize
+  if len(chunkMe) % chunkSize != 0 { numChunks += 1 }
+  chunks := make([][]byte, numChunks)
+  for i := 0; i < numChunks; i++ {
+    startIndex  := chunkSize * i
+    endIndex    := chunkSize * (i + 1)
+    if endIndex > len(chunkMe) { endIndex = len(chunkMe) }
+    chunks[i] = chunkMe[startIndex:endIndex]
+  }
+  return chunks
 }
 
 // func FirstLine(s string) string {

@@ -66,7 +66,7 @@ func AssertTransposeChunks(t *testing.T, chunks []string, expected []string) {
 }
 
 func AssertChunkBytes(t *testing.T, chunkMe string, chunkSize int, expected []string) {
-  actual := ChunkBytes([]byte(chunkMe), chunkSize)
+  actual := utils.ChunkBytes([]byte(chunkMe), chunkSize)
   assertions.AssertStringArraysEqual(t, actual, expected)
 }
 

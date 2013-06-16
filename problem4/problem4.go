@@ -9,26 +9,20 @@ package problem4
 // has been encrypted by single-character XOR. Find it. (Your code from
 // #3 should help.)
 
-// ------------------------------------------------------------
-import "os"
 import "bufio"
 import "strings"
 import "subakva/matasano/problem3"
+import "subakva/matasano/utils"
+
+func ScanXORDecrypt(scanner *bufio.Scanner) string {
+  decoded, _ := problem3.RepeatingCharacterXORDecrypt(scanner.Text())
+  if decoded != "" {
+    return strings.TrimSpace(decoded)
+  } else {
+    return ""
+  }
+}
 
 func DetectRepeatingCharacterXOR(filename string) (string) {
-  wd, _ := os.Getwd();
-  path := wd + "/" + filename
-
-  file, err := os.Open(path)
-  if err != nil { panic(err) }
-  defer file.Close()
-
-  scanner := bufio.NewScanner(file)
-  for scanner.Scan() {
-    decoded, _ := problem3.RepeatingCharacterXORDecrypt(scanner.Text())
-    if decoded != "" {
-      return strings.TrimSpace(decoded)
-    }
-  }
-  return ""
+  return utils.ReadAndScan(filename, ScanXORDecrypt)
 }
