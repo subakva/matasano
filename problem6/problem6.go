@@ -128,8 +128,6 @@ func GuessKeySize(bytes []byte, numChunks int) (likelyKeySize int) {
       }
     }
     averageDistance := Float64Average(distances)
-    // fmt.Printf("keySize, averageDistance  = %v, %v\n", keySize, averageDistance)
-    // fmt.Printf("keySize, distances        = %v, %v\n", keySize, distances)
     if averageDistance < minDistance {
       minDistance   = averageDistance
       likelyKeySize = keySize
@@ -158,19 +156,12 @@ func TransposeChunks(chunks [][]byte) (transposed [][]byte) {
     }
     transposed[byteIndex] = block
   }
-  // for i := 0; i < len(transposed); i++ {
-  //   fmt.Printf("len(transposed[%v]) : %v\n", i, len(transposed[i]))
-  //   fmt.Printf("transposed[%v] : %v\n", i, transposed[i])
-  // }
   return
 }
 
 // Composes an array of strings into a single string, character-by-character
 func ComposeParts(parts []string) (message string) {
   numParts := len(parts)
-  // for i := 0; i < numParts; i++ {
-  //   fmt.Printf("parts[%v] : %v\n", i, parts[i])
-  // }
   for i := 0; i < len(parts[0]); i++ {
     for j := 0; j < numParts; j++ {
       if i < len(parts[j]) {
