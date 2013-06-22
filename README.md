@@ -5,14 +5,13 @@ Solutions for the Matasano Crypto Challenge in Go.
 
 From private repo:
 
-    $ cd $GOPATH
-    $ git clone git@github.com:subakva/matasano.git src/subakva/matasano
+    $ git clone git@github.com:subakva/matasano.git
+    $ source .env
     $ pushd src; find subakva/matasano -type d -name "problem*" | xargs go test; popd
 
 From a tarball:
 
-    $ pushd $GOPATH/src
     $ tar xzf subakva.tar.gz
-    $ popd
+    $ source .env
     $ pushd src; find subakva/matasano -type d -name "problem*" | xargs go test; popd
 
