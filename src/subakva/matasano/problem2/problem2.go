@@ -21,14 +21,16 @@ import "encoding/hex"
 
 // Calculates the XOR of two hex-encoded strings
 func FixedXOR(hex1 string, hex2 string) string {
-  if len(hex1) != len(hex2) { panic("FixedXOR: String lengths must match!") }
+	if len(hex1) != len(hex2) {
+		panic("FixedXOR: String lengths must match!")
+	}
 
-  bytes1, _ := hex.DecodeString(hex1)
-  bytes2, _ := hex.DecodeString(hex2)
+	bytes1, _ := hex.DecodeString(hex1)
+	bytes2, _ := hex.DecodeString(hex2)
 
-  xored := make([]byte, len(bytes1))
-  for i := 0; i < len(bytes1); i++ {
-    xored[i] = bytes1[i] ^ bytes2[i]
-  }
-  return hex.EncodeToString(xored)
+	xored := make([]byte, len(bytes1))
+	for i := 0; i < len(bytes1); i++ {
+		xored[i] = bytes1[i] ^ bytes2[i]
+	}
+	return hex.EncodeToString(xored)
 }

@@ -15,18 +15,18 @@ package problem5
 // feel for it.
 
 import (
-  "encoding/hex"
-  "subakva/matasano/problem2"
+	"encoding/hex"
+	"subakva/matasano/problem2"
 )
 
 // Encrypts the message with the key
-func RepeatingKeyXOREncrypt(message string, key string) (string) {
-  mask := ""
-  for len(mask) < len(message) {
-    mask += key
-  }
-  mask = mask[0:len(message)]
-  hexMessage := hex.EncodeToString([]byte(message))
-  hexMask    := hex.EncodeToString([]byte(mask))
-  return problem2.FixedXOR(hexMessage, hexMask)
+func RepeatingKeyXOREncrypt(message string, key string) string {
+	mask := ""
+	for len(mask) < len(message) {
+		mask += key
+	}
+	mask = mask[0:len(message)]
+	hexMessage := hex.EncodeToString([]byte(message))
+	hexMask := hex.EncodeToString([]byte(mask))
+	return problem2.FixedXOR(hexMessage, hexMask)
 }

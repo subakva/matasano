@@ -19,35 +19,39 @@ package problem7
 // Use OpenSSL::Cipher and give it AES-128-ECB as the cipher.
 
 import (
-  "bytes"
-  "crypto/aes"
-  "subakva/matasano/utils"
+	"bytes"
+	"crypto/aes"
+	"subakva/matasano/utils"
 )
 
 // Decrypts the given byte array with the given key and returns the result.
 func AESECBDecrypt(message []byte, key []byte) []byte {
-  cipher, cerr := aes.NewCipher([]byte(key))
-  if cerr != nil { panic(cerr) }
+	cipher, cerr := aes.NewCipher([]byte(key))
+	if cerr != nil {
+		panic(cerr)
+	}
 
-  encrypted := bytes.NewBuffer(message)
-  decrypted := bytes.NewBuffer(make([]byte, 0))
+	encrypted := bytes.NewBuffer(message)
+	decrypted := bytes.NewBuffer(make([]byte, 0))
 
-  bufferIn  := make([]byte, len(key))
-  bufferOut := make([]byte, len(key))
-  for {
-    i, _ := encrypted.Read(bufferIn)
-    if i == 0 { break }
-    cipher.Decrypt(bufferOut, bufferIn)
-    decrypted.Write(bufferOut)
-  }
+	bufferIn := make([]byte, len(key))
+	bufferOut := make([]byte, len(key))
+	for {
+		i, _ := encrypted.Read(bufferIn)
+		if i == 0 {
+			break
+		}
+		cipher.Decrypt(bufferOut, bufferIn)
+		decrypted.Write(bufferOut)
+	}
 
-  return decrypted.Bytes()
+	return decrypted.Bytes()
 }
 
 // Opens the a base64-encoded file and decrypts it with the given key
 func AESECBDecryptFile(filename string, key string) string {
-  encoded := utils.ReadRelative(filename)
-  decoded := utils.DecodeBase64(encoded)
+	encoded := utils.ReadRelative(filename)
+	decoded := utils.DecodeBase64(encoded)
 
-  return string(AESECBDecrypt(decoded, []byte(key)))
+	return string(AESECBDecrypt(decoded, []byte(key)))
 }
